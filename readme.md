@@ -1,8 +1,12 @@
 # [Aqua Resizer](http://aquagraphite.com/)
-### Version 1.2
+### Version 1.3
 
 * Author: Syamil MJ
 * Website: [Aquagraphite.com](http://aquagraphite.com/)
+
+**Version 1.3 now supports image metadata so other plugins that manipulate images in WordPress will know about the resized image.**
+
+Resized images should now work with CND plugins like Offload S3 and also will be deleted when the original image is removed. Cool :)
 
 This small script will allow you to resize & crop WordPress images uploaded via the media uploader on the fly. It relies on WP's native functions to resize the images, and checks if there is an already resized version of the image so that it won't be wasting your server's resources to regenerate the images.
 
@@ -43,6 +47,9 @@ Website: http://aquagraphite.com
 
 ## Changelog
 
+**v1.3**
+- Update image metadata on image creation to support 3rd party image optimization plugins. Resized images should now work with CND plugins like Offload S3 and also will be deleted when the original image is removed.
+
 **v1.2.1**
 - WPML fix for image issue when Different domain per language is selected - https://github.com/syamilmj/Aqua-Resizer/issues/61
 
@@ -80,8 +87,6 @@ Website: http://aquagraphite.com
 
 **v1.0**
 first commit
-
-
 
 
 
