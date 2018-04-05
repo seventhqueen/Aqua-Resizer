@@ -1,8 +1,7 @@
-# [Aqua Resizer](http://aquagraphite.com/)
+# [SQ Resizer](https://seventhqueen.com/)
 ### Version 1.3
 
-* Author: Syamil MJ
-* Website: [Aquagraphite.com](http://aquagraphite.com/)
+Based on original code of Aqua Resizer from Syamil MJ
 
 **Version 1.3 now supports image metadata so other plugins that manipulate images in WordPress will know about the resized image.**
 
