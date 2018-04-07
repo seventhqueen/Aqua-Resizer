@@ -14,7 +14,8 @@
  * @param int $height - (optional)
  * @param bool $crop - (optional) default to soft crop
  * @param bool $single - (optional) returns an array if false
- * @param bool    $upscale  - (optional) resizes smaller images
+ * @param bool $upscale - (optional) resizes smaller images
+ *
  * @uses  wp_upload_dir()
  * @uses  image_resize_dimensions()
  * @uses  wp_get_image_editor()
@@ -23,7 +24,8 @@
  */
 
 if ( ! class_exists( 'Aq_Resize' ) ) {
-	class Aq_Exception extends Exception {}
+	class Aq_Exception extends Exception {
+	}
 
 	class Aq_Resize {
 		/**
@@ -80,8 +82,8 @@ if ( ! class_exists( 'Aq_Resize' ) ) {
 				$upload_dir  = $upload_info['basedir'];
 				$upload_url  = $upload_info['baseurl'];
 
-				$http_prefix  = "http://";
-				$https_prefix = "https://";
+				$http_prefix     = "http://";
+				$https_prefix    = "https://";
 				$relative_prefix = "//"; // The protocol-relative URL
 
 				/* if the $url scheme differs from $upload_url scheme, make them match
@@ -90,15 +92,17 @@ if ( ! class_exists( 'Aq_Resize' ) ) {
 					$upload_url = str_replace( $http_prefix, $https_prefix, $upload_url );
 				} elseif ( ! strncmp( $url, $http_prefix, strlen( $http_prefix ) ) ) { //if url begins with http:// make $upload_url begin with http:// as well
 					$upload_url = str_replace( $https_prefix, $http_prefix, $upload_url );
-				}
-				elseif(!strncmp($url,$relative_prefix,strlen($relative_prefix))){ //if url begins with // make $upload_url begin with // as well
-					$upload_url = str_replace(array( 0 => "$http_prefix", 1 => "$https_prefix"),$relative_prefix,$upload_url);
+				} elseif ( ! strncmp( $url, $relative_prefix, strlen( $relative_prefix ) ) ) { //if url begins with // make $upload_url begin with // as well
+					$upload_url = str_replace( array(
+						0 => "$http_prefix",
+						1 => "$https_prefix"
+					), $relative_prefix, $upload_url );
 				}
 
 
 				// Check if $img_url is local.
 				if ( false === strpos( $url, $upload_url ) ) {
-					throw new Aq_Exception('Image must be local: ' . $url);
+					throw new Aq_Exception( 'Image must be local: ' . $url );
 				}
 
 				// Define path of image.
@@ -133,9 +137,8 @@ if ( ! class_exists( 'Aq_Resize' ) ) {
 
 					if ( ! $dims || ( true == $crop && false == $upscale && ( $dst_w < $width || $dst_h < $height ) ) ) {
 						// Can't resize, so return false saying that the action to do could not be processed as planned.
-						throw new Aq_Exception('Unable to resize image because image_resize_dimensions() failed');
-					}
-					// Else check if cache exists.
+						throw new Aq_Exception( 'Unable to resize image because image_resize_dimensions() failed' );
+					} // Else check if cache exists.
 					elseif ( file_exists( $destfilename ) && getimagesize( $destfilename ) ) {
 						$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
 					} // Else, we resize the image and return the new resized image url.
@@ -144,8 +147,8 @@ if ( ! class_exists( 'Aq_Resize' ) ) {
 						$editor = wp_get_image_editor( $img_path );
 
 						if ( is_wp_error( $editor ) || is_wp_error( $editor->resize( $width, $height, $crop ) ) ) {
-							throw new Aq_Exception('Unable to get WP_Image_Editor: ' .
-							                       $editor->get_error_message() . ' (is GD or ImageMagick installed?)');
+							throw new Aq_Exception( 'Unable to get WP_Image_Editor: ' .
+							                        $editor->get_error_message() . ' (is GD or ImageMagick installed?)' );
 						}
 
 						$resized_file = $editor->save();
@@ -183,7 +186,7 @@ if ( ! class_exists( 'Aq_Resize' ) ) {
 								$mime_type = isset( $mime_type['type'] ) ? $mime_type['type'] : '';
 
 								// Cropped image file name.
-								$dst_filename = $info['filename'] . '-' . $suffix . $ext;
+								$dst_filename = $info['filename'] . '-' . $suffix . '.' . $ext;
 
 								// Add cropped image to image meta.
 								$meta['sizes'][ $int_size ] = array(
@@ -220,15 +223,13 @@ if ( ! class_exists( 'Aq_Resize' ) ) {
 				}
 
 				return $image;
-			}
-			catch (Aq_Exception $ex) {
-				error_log('Aq_Resize.process() error: ' . $ex->getMessage());
+			} catch ( Aq_Exception $ex ) {
+				error_log( 'Aq_Resize.process() error: ' . $ex->getMessage() );
 
-				if ($this->throwOnError) {
+				if ( $this->throwOnError ) {
 					// Bubble up exception.
 					throw $ex;
-				}
-				else {
+				} else {
 					// Return false, so that this patch is backwards-compatible.
 					return false;
 				}
